@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/*
+  Pitch Night — mörkt, sportigt tema.
+  Bakgrundsbild kan droppas in via --bg-image (se body::before nedan).
+  Lägg din bild i /public och peka om variabeln, t.ex:
+    --bg-image: url("/pitch-bg.jpg");
+*/
+
+@theme {
+  --color-bg: #0b1512;
+  --color-surface: #10201a;
+  --color-surface-2: #16291f;
+  --color-border: #24382e;
+
+  --color-brand: #b4ff3d; /* neon-lime accent */
+  --color-brand-dim: #8fd42f;
+  --color-mint: #38e8c6; /* sekundär */
+  --color-gold: #f4c430; /* pallplatser */
+
+  --color-ink: #f5f7f4;
+  --color-muted: #93a89c;
+  --color-faint: #5f7268;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-card: 1rem;
+}
+
+:root {
+  /*
+    Bakgrundsbilden (neon-skyline). Byt ut filen i /public mot en
+    fotbollsarena-version senare — ingen kodändring behövs, bara samma filnamn.
+  */
+  --bg-image: url("/background.jpg");
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bakgrundslager: valfri bild + stadion-gradient som alltid håller texten läsbar */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, rgba(180, 255, 61, 0.08), transparent 55%),
+    linear-gradient(
+      180deg,
+      rgba(11, 21, 18, 0.35) 0%,
+      rgba(11, 21, 18, 0.55) 28%,
+      rgba(11, 21, 18, 0.9) 52%,
+      var(--color-bg) 72%
+    ),
+    var(--bg-image);
+  background-size: 100% 100%, 100% 100%, 100% auto;
+  background-position: center, center, center top;
+  background-repeat: no-repeat;
+}
+
+/* Tunn scrollbar som passar temat */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
