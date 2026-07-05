@@ -13,10 +13,16 @@
   --color-surface-2: #16291f;
   --color-border: #24382e;
 
-  --color-brand: #b4ff3d; /* neon-lime accent */
+  /* Neonpalett hämtad ur bakgrundsbilden */
+  --color-brand: #b4ff3d; /* lime — signaturfärg */
   --color-brand-dim: #8fd42f;
-  --color-mint: #38e8c6; /* sekundär */
-  --color-gold: #f4c430; /* pallplatser */
+  --color-mint: #38e8c6; /* teal/mint */
+  --color-cyan: #2fe6ff; /* cyan */
+  --color-blue: #5b8bff; /* blå */
+  --color-violet: #b06bff; /* lila */
+  --color-pink: #ff5c8a; /* rosa/magenta */
+  --color-orange: #ff9d3d; /* orange */
+  --color-gold: #f4c430; /* guld — pallplatser */
 
   --color-ink: #f5f7f4;
   --color-muted: #93a89c;
@@ -74,3 +80,20 @@ body::before {
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
 }
+
+/* Subtil neon-glow bakom accentytor */
+.neon-glow {
+  box-shadow: 0 0 24px -6px var(--glow, var(--color-brand));
+}
+
+/* Fotbollsplan-ränder (som en klippt gräsmatta) — diskret textur */
+.field-stripes {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(180, 255, 61, 0.05) 0,
+    rgba(180, 255, 61, 0.05) 28px,
+    transparent 28px,
+    transparent 56px
+  );
+}
+

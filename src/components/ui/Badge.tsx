@@ -1,13 +1,28 @@
 import { cn } from "@/lib/cn";
 
-type Tone = "brand" | "mint" | "gold" | "muted" | "live";
+type Tone =
+  | "brand"
+  | "mint"
+  | "cyan"
+  | "blue"
+  | "violet"
+  | "pink"
+  | "orange"
+  | "gold"
+  | "muted"
+  | "live";
 
 const tones: Record<Tone, string> = {
   brand: "bg-brand/15 text-brand",
   mint: "bg-mint/15 text-mint",
+  cyan: "bg-cyan/15 text-cyan",
+  blue: "bg-blue/15 text-blue",
+  violet: "bg-violet/15 text-violet",
+  pink: "bg-pink/15 text-pink",
+  orange: "bg-orange/15 text-orange",
   gold: "bg-gold/15 text-gold",
   muted: "bg-surface-2 text-muted",
-  live: "bg-red-500/15 text-red-400",
+  live: "bg-pink/15 text-pink",
 };
 
 export function Badge({

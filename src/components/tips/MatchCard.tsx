@@ -1,5 +1,7 @@
 import type { Match } from "@/lib/mock/data";
 import { Badge, LiveDot } from "@/components/ui/Badge";
+import { BallIcon } from "@/components/ui/Football";
+import { groupColor } from "@/lib/groupColors";
 import { cn } from "@/lib/cn";
 
 function kickoffLabel(iso: string) {
@@ -68,7 +70,9 @@ export function MatchCard({
         ) : status === "finished" ? (
           <Badge tone="muted">Slutresultat</Badge>
         ) : match.group ? (
-          <span>Grupp {match.group}</span>
+          <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-medium", groupColor(match.group).bg, groupColor(match.group).text)}>
+            Grupp {match.group}
+          </span>
         ) : null}
       </div>
 
@@ -84,7 +88,7 @@ export function MatchCard({
               <span>{awayScore}</span>
             </div>
           ) : (
-            <span className="text-sm font-medium text-faint">vs</span>
+            <BallIcon className="h-5 w-5 text-faint" />
           )}
         </div>
 

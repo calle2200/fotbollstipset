@@ -3,7 +3,13 @@ import { cn } from "@/lib/cn";
 
 function RankBadge({ rank }: { rank: number }) {
   const medal =
-    rank === 1 ? "bg-gold/20 text-gold" : rank <= 3 ? "bg-mint/15 text-mint" : "bg-surface-2 text-muted";
+    rank === 1
+      ? "bg-gold/20 text-gold"
+      : rank === 2
+        ? "bg-cyan/15 text-cyan"
+        : rank === 3
+          ? "bg-violet/15 text-violet"
+          : "bg-surface-2 text-muted";
   return (
     <span className={cn("flex h-7 w-7 items-center justify-center rounded-lg text-sm font-bold", medal)}>
       {rank}
