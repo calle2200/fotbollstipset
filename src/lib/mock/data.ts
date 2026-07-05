@@ -140,6 +140,29 @@ export const matches: Match[] = [
   },
 ];
 
+// --- Spelare (för specialval) ------------------------------------------
+
+export type Player = {
+  id: string;
+  name: string;
+  teamCode: string;
+  position: "GK" | "DF" | "MF" | "FW";
+};
+
+export const players: Player[] = [
+  { id: "mbappe", name: "K. Mbappé", teamCode: "FRA", position: "FW" },
+  { id: "haaland", name: "E. Haaland", teamCode: "NOR", position: "FW" },
+  { id: "bellingham", name: "J. Bellingham", teamCode: "ENG", position: "MF" },
+  { id: "foden", name: "P. Foden", teamCode: "ENG", position: "MF" },
+  { id: "vinicius", name: "Vinícius Jr.", teamCode: "BRA", position: "FW" },
+  { id: "rodri", name: "Rodri", teamCode: "ESP", position: "MF" },
+  { id: "isak", name: "A. Isak", teamCode: "SWE", position: "FW" },
+  { id: "kane", name: "H. Kane", teamCode: "ENG", position: "FW" },
+  { id: "simon", name: "Unai Simón", teamCode: "ESP", position: "GK" },
+  { id: "donnarumma", name: "G. Donnarumma", teamCode: "ITA", position: "GK" },
+  { id: "martinez", name: "E. Martínez", teamCode: "ARG", position: "GK" },
+];
+
 // --- Slutspel (fas 2) ---------------------------------------------------
 
 export const knockoutRounds = [

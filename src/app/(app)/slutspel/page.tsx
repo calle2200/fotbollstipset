@@ -1,7 +1,8 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Badge, LiveDot } from "@/components/ui/Badge";
 import { StubNotice } from "@/components/ui/StubNotice";
-import { MatchCard } from "@/components/tips/MatchCard";
+import { MatchPicker } from "@/components/tips/MatchPicker";
+import { SaveStatus } from "@/components/tips/SaveStatus";
 import { knockoutRounds } from "@/lib/mock/data";
 import type { Match } from "@/lib/mock/data";
 
@@ -17,6 +18,7 @@ export default function SlutspelPage() {
       <PageHeader
         title="Slutspelstips"
         subtitle="Fas 2 — varje runda öppnas när matcherna blir kända och låses vid rundans start."
+        action={<SaveStatus />}
       />
 
       <StubNotice>
@@ -50,7 +52,7 @@ export default function SlutspelPage() {
                       kickoff: km.kickoff,
                       status: "scheduled",
                     };
-                    return <MatchCard key={km.id} match={match} variant="pick" />;
+                    return <MatchPicker key={km.id} match={match} />;
                   })}
                 </div>
               ) : (
