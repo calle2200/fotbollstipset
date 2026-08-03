@@ -21,12 +21,6 @@ export const primaryNav: NavItem[] = [
     icon: "M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11",
   },
   {
-    href: "/slutspel",
-    label: "Slutspel",
-    short: "Slutspel",
-    icon: "M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3",
-  },
-  {
     href: "/matcher",
     label: "Matcher",
     short: "Matcher",
