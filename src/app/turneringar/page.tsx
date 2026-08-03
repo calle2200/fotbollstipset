@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
 import { Badge } from "@/components/ui/Badge";
+import { Countdown } from "@/components/ui/Countdown";
 import { BallIcon, TrophyIcon } from "@/components/ui/Football";
 import { tournaments, currentUser } from "@/lib/mock/data";
 
@@ -73,6 +74,13 @@ export default function TurneringarPage() {
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-2 text-muted transition-all group-hover:bg-brand group-hover:text-[#08120b]">
                   →
                 </span>
+              </div>
+
+              <div className="mt-5">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-faint">
+                  Avspark om
+                </p>
+                <Countdown target={tour.startsAt} variant="cards" />
               </div>
             </Link>
           ))}
