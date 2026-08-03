@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
 import { ButtonLink } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -42,9 +43,17 @@ export default function LandingPage() {
       {/* Toppbar */}
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
         <Logo href="/" />
-        <ButtonLink href="/turneringar" variant="outline" size="sm">
-          Logga in
-        </ButtonLink>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/regler"
+            className="rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+          >
+            Regler
+          </Link>
+          <ButtonLink href="/turneringar" variant="outline" size="sm">
+            Logga in
+          </ButtonLink>
+        </div>
       </header>
 
       {/* Hero */}
