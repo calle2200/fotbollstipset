@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Logo } from "./Logo";
 import { NavIcon } from "./NavIcon";
 import { primaryNav, secondaryNav, allNav } from "@/lib/nav";
-import { currentUser } from "@/lib/mock/data";
+import { currentUser, activeTournament } from "@/lib/mock/data";
 import { cn } from "@/lib/cn";
 
 function isActive(pathname: string, href: string) {
@@ -20,8 +20,21 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="flex items-center gap-8">
-          <Logo />
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2.5">
+            <Logo />
+            {/* Aktiv turnering — klicka för att byta */}
+            <Link
+              href="/turneringar"
+              title="Byt turnering"
+              className="hidden items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-muted transition-colors hover:border-brand/40 hover:text-ink sm:inline-flex"
+            >
+              {activeTournament.short}
+              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 3L4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4" />
+              </svg>
+            </Link>
+          </div>
           {/* Desktop primär nav */}
           <nav className="hidden items-center gap-1 lg:flex">
             {primaryNav.map((item) => {
@@ -85,6 +98,18 @@ export function Header() {
       {/* Mobil slide-in-meny */}
       {menuOpen && (
         <div className="border-t border-border bg-bg/95 backdrop-blur-md lg:hidden">
+          <div className="mx-auto max-w-6xl px-4 pt-3">
+            <Link
+              href="/turneringar"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center justify-between rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm"
+            >
+              <span className="text-muted">
+                Turnering: <span className="font-semibold text-ink">{activeTournament.short}</span>
+              </span>
+              <span className="text-xs font-medium text-brand">Byt →</span>
+            </Link>
+          </div>
           <nav className="mx-auto grid max-w-6xl gap-1 px-4 py-3">
             {allNav.map((item) => {
               const active = isActive(pathname, item.href);

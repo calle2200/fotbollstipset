@@ -42,7 +42,7 @@ export default function LandingPage() {
       {/* Toppbar */}
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
         <Logo href="/" />
-        <ButtonLink href="/mitt-tips" variant="outline" size="sm">
+        <ButtonLink href="/turneringar" variant="outline" size="sm">
           Logga in
         </ButtonLink>
       </header>
@@ -51,7 +51,7 @@ export default function LandingPage() {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center px-4 sm:px-6">
         <section className="flex flex-col items-center py-14 text-center sm:py-20">
           <Badge tone="brand" className="mb-5">
-            ⚽ VM 2026 · tippa mot vännerna
+            ⚽ EM 2028 · tippa mot vännerna
           </Badge>
           <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-6xl">
             Tippa turneringen.
@@ -91,7 +91,7 @@ export default function LandingPage() {
                 placeholder="du@example.com"
                 className="h-11 rounded-xl border border-border bg-surface-2 px-4 text-ink placeholder:text-faint focus:outline-none"
               />
-              <ButtonLink href="/mitt-tips" size="lg" className="neon-glow w-full">
+              <ButtonLink href="/turneringar" size="lg" className="neon-glow w-full">
                 Skicka inloggningslänk
               </ButtonLink>
               <p className="text-xs text-faint">

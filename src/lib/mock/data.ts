@@ -6,6 +6,36 @@
  * eller poänglogik ännu.
  */
 
+// --- Turneringar --------------------------------------------------------
+
+export type Tournament = {
+  id: string;
+  name: string;
+  short: string;
+  type: "em" | "vm";
+  host: string; // värdland(er)
+  startsAt: string; // ISO (turneringsstart)
+  teamCount: number;
+  /** available = valbar, upcoming = ännu ej öppen */
+  status: "available" | "upcoming";
+};
+
+export const tournaments: Tournament[] = [
+  {
+    id: "em-2028",
+    name: "Fotbolls-EM 2028",
+    short: "EM 2028",
+    type: "em",
+    host: "🏴󠁧󠁢󠁥󠁮󠁧󠁿🏴󠁧󠁢󠁳󠁣󠁴󠁿🏴󠁧󠁢󠁷󠁬󠁳󠁿🇮🇪 Storbritannien & Irland",
+    startsAt: "2028-06-09T00:00:00Z",
+    teamCount: 24,
+    status: "available",
+  },
+];
+
+/** Den turnering appen just nu är scopad till (bara en i v1). */
+export const activeTournament = tournaments[0];
+
 export type Team = {
   id: string;
   name: string;
@@ -62,11 +92,11 @@ export const teams: Team[] = [
   { id: "swe", name: "Sverige", code: "SWE", flag: "🇸🇪", group: "A" },
   { id: "esp", name: "Spanien", code: "ESP", flag: "🇪🇸", group: "A" },
   { id: "cro", name: "Kroatien", code: "CRO", flag: "🇭🇷", group: "A" },
-  { id: "jpn", name: "Japan", code: "JPN", flag: "🇯🇵", group: "A" },
-  { id: "bra", name: "Brasilien", code: "BRA", flag: "🇧🇷", group: "B" },
+  { id: "por", name: "Portugal", code: "POR", flag: "🇵🇹", group: "A" },
+  { id: "ger", name: "Tyskland", code: "GER", flag: "🇩🇪", group: "B" },
   { id: "fra", name: "Frankrike", code: "FRA", flag: "🇫🇷", group: "B" },
-  { id: "arg", name: "Argentina", code: "ARG", flag: "🇦🇷", group: "B" },
-  { id: "eng", name: "England", code: "ENG", flag: "🏴", group: "B" },
+  { id: "ita", name: "Italien", code: "ITA", flag: "🇮🇹", group: "B" },
+  { id: "eng", name: "England", code: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", group: "B" },
 ];
 
 const t = (id: string) => teams.find((x) => x.id === id)!;
@@ -79,8 +109,8 @@ export const matches: Match[] = [
     stage: "group",
     group: "A",
     home: t("swe"),
-    away: t("jpn"),
-    kickoff: "2026-06-11T18:00:00Z",
+    away: t("por"),
+    kickoff: "2028-06-11T18:00:00Z",
     status: "finished",
     homeScore: 2,
     awayScore: 1,
@@ -92,7 +122,7 @@ export const matches: Match[] = [
     group: "A",
     home: t("esp"),
     away: t("cro"),
-    kickoff: "2026-06-11T21:00:00Z",
+    kickoff: "2028-06-11T21:00:00Z",
     status: "finished",
     homeScore: 3,
     awayScore: 1,
@@ -102,9 +132,9 @@ export const matches: Match[] = [
     id: "m3",
     stage: "group",
     group: "B",
-    home: t("bra"),
+    home: t("ger"),
     away: t("eng"),
-    kickoff: "2026-06-12T18:00:00Z",
+    kickoff: "2028-06-12T18:00:00Z",
     status: "live",
     homeScore: 1,
     awayScore: 1,
@@ -115,8 +145,8 @@ export const matches: Match[] = [
     stage: "group",
     group: "B",
     home: t("fra"),
-    away: t("arg"),
-    kickoff: "2026-06-12T21:00:00Z",
+    away: t("ita"),
+    kickoff: "2028-06-12T21:00:00Z",
     status: "scheduled",
     pick: { home: 1, away: 1 },
   },
@@ -126,16 +156,16 @@ export const matches: Match[] = [
     group: "A",
     home: t("swe"),
     away: t("esp"),
-    kickoff: "2026-06-15T18:00:00Z",
+    kickoff: "2028-06-15T18:00:00Z",
     status: "scheduled",
   },
   {
     id: "m6",
     stage: "group",
     group: "B",
-    home: t("arg"),
+    home: t("ita"),
     away: t("eng"),
-    kickoff: "2026-06-15T21:00:00Z",
+    kickoff: "2028-06-15T21:00:00Z",
     status: "scheduled",
   },
 ];
@@ -154,13 +184,13 @@ export const players: Player[] = [
   { id: "haaland", name: "E. Haaland", teamCode: "NOR", position: "FW" },
   { id: "bellingham", name: "J. Bellingham", teamCode: "ENG", position: "MF" },
   { id: "foden", name: "P. Foden", teamCode: "ENG", position: "MF" },
-  { id: "vinicius", name: "Vinícius Jr.", teamCode: "BRA", position: "FW" },
+  { id: "yamal", name: "L. Yamal", teamCode: "ESP", position: "FW" },
   { id: "rodri", name: "Rodri", teamCode: "ESP", position: "MF" },
   { id: "isak", name: "A. Isak", teamCode: "SWE", position: "FW" },
   { id: "kane", name: "H. Kane", teamCode: "ENG", position: "FW" },
   { id: "simon", name: "Unai Simón", teamCode: "ESP", position: "GK" },
   { id: "donnarumma", name: "G. Donnarumma", teamCode: "ITA", position: "GK" },
-  { id: "martinez", name: "E. Martínez", teamCode: "ARG", position: "GK" },
+  { id: "pickford", name: "J. Pickford", teamCode: "ENG", position: "GK" },
 ];
 
 // --- Slutspel (fas 2) ---------------------------------------------------
@@ -171,8 +201,8 @@ export const knockoutRounds = [
     name: "Åttondelsfinaler",
     status: "open" as const, // open | locked | upcoming
     matches: [
-      { id: "k1", home: t("swe"), away: t("arg"), kickoff: "2026-07-04T18:00:00Z" },
-      { id: "k2", home: t("esp"), away: t("eng"), kickoff: "2026-07-04T21:00:00Z" },
+      { id: "k1", home: t("swe"), away: t("ita"), kickoff: "2028-07-04T18:00:00Z" },
+      { id: "k2", home: t("esp"), away: t("eng"), kickoff: "2028-07-04T21:00:00Z" },
     ],
   },
   {
@@ -229,11 +259,11 @@ export const leagueLeaderboard: LeaderRow[] = [
 // --- Specialval ---------------------------------------------------------
 
 export const specialPicks: SpecialPick[] = [
-  { id: "winner", label: "Turneringsvinnare", choice: "Brasilien 🇧🇷", maxPoints: 100, locked: true },
+  { id: "winner", label: "Turneringsvinnare", choice: "Spanien 🇪🇸", maxPoints: 100, locked: true },
   { id: "golden_boot", label: "Skyttekung", choice: "K. Mbappé", maxPoints: 80, locked: true },
   { id: "assists", label: "Flest assist", choice: "P. Foden", maxPoints: 70, locked: true },
   { id: "keeper", label: "Turneringens målvakt", choice: "Unai Simón", maxPoints: 60, locked: true },
-  { id: "top_four", label: "Topp fyra", choice: "BRA, FRA, ESP, ENG", maxPoints: 240, locked: true },
+  { id: "top_four", label: "Topp fyra", choice: "ESP, FRA, ENG, POR", maxPoints: 240, locked: true },
   { id: "most_goals_team", label: "Land med flest mål", choice: "Frankrike 🇫🇷", maxPoints: 50, locked: true },
   { id: "first_goal_team", label: "Första målet i turneringen", choice: "Sverige 🇸🇪", maxPoints: 20, locked: true },
 ];

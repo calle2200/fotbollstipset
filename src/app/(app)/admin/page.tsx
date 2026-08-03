@@ -3,7 +3,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { StubNotice } from "@/components/ui/StubNotice";
-import { matches, specialPicks } from "@/lib/mock/data";
+import { matches, specialPicks, activeTournament } from "@/lib/mock/data";
 
 export default function AdminPage() {
   return (
@@ -22,7 +22,7 @@ export default function AdminPage() {
 
       {/* Turneringsstatus */}
       <Card>
-        <CardHeader title="Turnering" subtitle="VM 2026" action={<Badge tone="mint">Aktiv</Badge>} />
+        <CardHeader title="Turnering" subtitle={activeTournament.name} action={<Badge tone="mint">Aktiv</Badge>} />
         <div className="grid gap-4 px-5 py-4 sm:grid-cols-3">
           {[
             { label: "Status", value: "Gruppspel" },
