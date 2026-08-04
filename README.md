@@ -67,3 +67,12 @@ läsbar. Justera overlayens mörkhet i `body::before` vid behov.
 Sök på `StubNotice` och `TODO (nästa session)` i koden. Bland annat:
 magic link-auth, databas + RLS, resultathämtning via API, poängmotor,
 fungerande ligor/inbjudningskoder och realtidsuppdaterade leaderboards.
+
+## Licens
+
+© 2026 Carl Lindström. **All Rights Reserved.**
+
+Detta repo är publikt enbart som referens/portfolio (t.ex. i jobbansökningar).
+Du får gärna läsa koden, men den är **inte** licensierad för återanvändning —
+se [LICENSE](LICENSE). Ingen rätt att använda, kopiera, modifiera eller
+distribuera koden ges utan skriftligt tillstånd.
