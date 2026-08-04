@@ -4,6 +4,10 @@ import { Badge } from "@/components/ui/Badge";
 import { Countdown } from "@/components/ui/Countdown";
 import { BallIcon, TrophyIcon } from "@/components/ui/Football";
 import { tournaments, currentUser } from "@/lib/mock/data";
+import { getTournaments } from "@/lib/supabase/tournaments";
+
+// Läs alltid färsk data från databasen vid varje besök.
+export const dynamic = "force-dynamic";
 
 function dateLabel(iso: string) {
   return new Date(iso).toLocaleDateString("sv-SE", {
@@ -13,7 +17,10 @@ function dateLabel(iso: string) {
   });
 }
 
-export default function TurneringarPage() {
+export default async function TurneringarPage() {
+  // Hämta från Supabase; faller tillbaka på mockdata om databasen inte svarar.
+  const list = (await getTournaments()) ?? tournaments;
+
   return (
     <div className="flex min-h-full flex-col">
       {/* Enkel toppbar */}
@@ -43,7 +50,7 @@ export default function TurneringarPage() {
         </div>
 
         <div className="grid gap-4">
-          {tournaments.map((tour) => (
+          {list.map((tour) => (
             <Link
               key={tour.id}
               href="/mitt-tips"

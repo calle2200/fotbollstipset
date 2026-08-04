@@ -1,6 +1,8 @@
-// Litet kopplingstest: läser .env.local och pingar Supabase.
+// Litet kopplingstest: läser .env.local och testar via Supabases officiella
+// klient (som hanterar den nya nyckeltypen korrekt).
 // Kör med:  node scripts/check-supabase.mjs
 import { readFileSync } from "node:fs";
+import { createClient } from "@supabase/supabase-js";
 
 function loadEnv(path) {
   const env = {};
@@ -28,21 +30,37 @@ if (!url || !key || url.includes("DIN-") || key.includes("DIN-")) {
   process.exit(1);
 }
 
-try {
-  const res = await fetch(`${url}/rest/v1/`, {
-    headers: { apikey: key, Authorization: `Bearer ${key}` },
-  });
-  if (res.ok) {
-    console.log(`✅ Kopplingen fungerar! Supabase svarade OK (status ${res.status}).`);
-  } else if (res.status === 401) {
-    console.error("❌ Nådde URL:en men nyckeln nekades (401). Är det verkligen anon/public-nyckeln?");
-    process.exit(1);
-  } else {
-    console.error(`⚠️ Oväntad status ${res.status}. Dubbelkolla URL och nyckel.`);
-    process.exit(1);
-  }
-} catch (e) {
-  console.error("❌ Kunde inte nå URL:en. Är NEXT_PUBLIC_SUPABASE_URL korrekt?");
-  console.error("   Detalj:", e.message);
+const supabase = createClient(url, key);
+
+// Vi frågar efter en tabell som inte finns än. Om nyckeln godkänns får vi ett
+// "tabellen finns inte"-fel (= kopplingen funkar). Nekas nyckeln får vi ett
+// nyckel-/behörighetsfel istället.
+const { error } = await supabase.from("__connection_check__").select("*").limit(1);
+
+if (!error) {
+  console.log("✅ Kopplingen fungerar! Nyckeln godkänd.");
+  process.exit(0);
+}
+
+const msg = (error.message || "").toLowerCase();
+const code = error.code || "";
+
+if (
+  code === "PGRST205" ||
+  msg.includes("could not find the table") ||
+  msg.includes("does not exist") ||
+  msg.includes("schema cache")
+) {
+  console.log("✅ Kopplingen fungerar! Nyckeln godkänd.");
+  console.log("   (Testtabellen finns inte än — helt väntat, vi har inga tabeller ännu.)");
+  process.exit(0);
+}
+
+if (msg.includes("invalid api key") || msg.includes("api key") || msg.includes("jwt")) {
+  console.error("❌ Nyckeln nekades. Kontrollera att hela publishable-nyckeln kopierats (inget saknas i början/slutet).");
+  console.error("   Detalj:", error.message);
   process.exit(1);
 }
+
+console.error("⚠️ Oväntat svar:", error.message, code ? `(kod: ${code})` : "");
+process.exit(1);

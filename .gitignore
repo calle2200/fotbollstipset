@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Supabase SQL-migrations — hålls lokalt för nu (ta bort raden för att versionshantera dem)
+/supabase/migrations/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

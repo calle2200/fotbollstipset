@@ -2,9 +2,16 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Badge } from "@/components/ui/Badge";
 import { StubNotice } from "@/components/ui/StubNotice";
 import { MatchCard } from "@/components/tips/MatchCard";
-import { matches } from "@/lib/mock/data";
+import { matches as mockMatches } from "@/lib/mock/data";
+import { getMatches } from "@/lib/supabase/matches";
 
-export default function MatcherPage() {
+// Läs alltid färsk data från databasen vid varje besök.
+export const dynamic = "force-dynamic";
+
+export default async function MatcherPage() {
+  // Hämta från Supabase; faller tillbaka på mockdata om databasen inte svarar.
+  const matches = (await getMatches()) ?? mockMatches;
+
   const live = matches.filter((m) => m.status === "live");
   const finished = matches.filter((m) => m.status === "finished");
   const upcoming = matches.filter((m) => m.status === "scheduled");
@@ -19,12 +26,12 @@ export default function MatcherPage() {
     <div className="space-y-8">
       <PageHeader
         title="Matcher & resultat"
-        subtitle="Alla matcher i turneringen med resultat och ditt tips per match."
+        subtitle="Alla matcher i turneringen med resultat."
       />
 
       <StubNotice>
-        Resultat hämtas automatiskt från football-data.org via ett schemalagt jobb
-        i en senare session. Här visas mockade matcher.
+        Matcherna läses nu från databasen. Automatisk resultathämtning från
+        football-data.org kopplas på i en senare session.
       </StubNotice>
 
       {sections.map((section) => (
