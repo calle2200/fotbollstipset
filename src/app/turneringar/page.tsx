@@ -5,6 +5,7 @@ import { Countdown } from "@/components/ui/Countdown";
 import { BallIcon, TrophyIcon } from "@/components/ui/Football";
 import { tournaments, currentUser } from "@/lib/mock/data";
 import { getTournaments } from "@/lib/supabase/tournaments";
+import { getCurrentUser } from "@/lib/supabase/server";
 
 // Läs alltid färsk data från databasen vid varje besök.
 export const dynamic = "force-dynamic";
@@ -20,6 +21,9 @@ function dateLabel(iso: string) {
 export default async function TurneringarPage() {
   // Hämta från Supabase; faller tillbaka på mockdata om databasen inte svarar.
   const list = (await getTournaments()) ?? tournaments;
+  const user = await getCurrentUser();
+  // Visa den del av mejlen som står före @ som visningsnamn tills profiler finns.
+  const greetingName = user?.email?.split("@")[0] ?? currentUser.displayName;
 
   return (
     <div className="flex min-h-full flex-col">
@@ -29,17 +33,17 @@ export default async function TurneringarPage() {
           <Logo href="/turneringar" />
           <Link
             href="/profil"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-2 text-lg transition-colors hover:border-brand/40"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-2 text-sm font-bold text-ink transition-colors hover:border-brand/40"
             aria-label="Profil"
           >
-            {currentUser.avatar}
+            {user?.email ? user.email[0]!.toUpperCase() : currentUser.avatar}
           </Link>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
         <div className="mb-8">
-          <p className="text-sm font-medium text-muted">Hej {currentUser.displayName} 👋</p>
+          <p className="text-sm font-medium text-muted">Hej {greetingName} 👋</p>
           <h1 className="mt-1 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             Välj turnering
           </h1>

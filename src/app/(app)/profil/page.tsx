@@ -1,9 +1,12 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { Button, ButtonLink } from "@/components/ui/Button";
 import { StubNotice } from "@/components/ui/StubNotice";
 import { specialPicks, leagues, currentUser } from "@/lib/mock/data";
+import { getCurrentUser } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
@@ -14,19 +17,45 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: str
   );
 }
 
-export default function ProfilPage() {
+export default async function ProfilPage() {
   const hitRate = Math.round((currentUser.correctPicks / currentUser.totalPicks) * 100);
+  const user = await getCurrentUser();
 
   return (
     <div className="space-y-8">
       <PageHeader
         title="Profil"
         action={
-          <Button disabled variant="outline">
-            Logga ut
-          </Button>
+          user ? (
+            <form action="/auth/sign-out" method="post">
+              <Button type="submit" variant="outline">
+                Logga ut
+              </Button>
+            </form>
+          ) : (
+            <ButtonLink href="/" variant="outline">
+              Logga in
+            </ButtonLink>
+          )
         }
       />
+
+      {/* Inloggningsstatus */}
+      <div
+        className={`rounded-xl border px-4 py-3 text-sm ${
+          user
+            ? "border-brand/40 bg-brand/10 text-ink"
+            : "border-border bg-surface-2/50 text-muted"
+        }`}
+      >
+        {user ? (
+          <>
+            ✅ Inloggad som <span className="font-semibold">{user.email}</span>
+          </>
+        ) : (
+          <>Inte inloggad — profilen nedan visar exempeldata.</>
+        )}
+      </div>
 
       {/* Profilkort */}
       <Card className="p-6">

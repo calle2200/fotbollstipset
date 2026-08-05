@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
 import { ButtonLink } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { StubNotice } from "@/components/ui/StubNotice";
+import { MagicLinkForm } from "@/components/auth/MagicLinkForm";
 import { BallIcon, TrophyIcon, WhistleIcon, PitchMarkings } from "@/components/ui/Football";
 
 const features = [
@@ -88,31 +88,9 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Login-platshållare */}
+          {/* Inloggning via magic link */}
           <div className="mt-9 w-full max-w-sm">
-            <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface/80 p-5 backdrop-blur-sm">
-              <label className="text-left text-sm font-medium text-muted">
-                E-post (magic link)
-              </label>
-              <input
-                type="email"
-                disabled
-                placeholder="du@example.com"
-                className="h-11 rounded-xl border border-border bg-surface-2 px-4 text-ink placeholder:text-faint focus:outline-none"
-              />
-              <ButtonLink href="/turneringar" size="lg" className="neon-glow w-full">
-                Skicka inloggningslänk
-              </ButtonLink>
-              <p className="text-xs text-faint">
-                Ingen riktig inloggning ännu — knappen tar dig rakt in i appen.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 w-full max-w-sm">
-            <StubNotice>
-              Magic link-inloggning via Supabase Auth kopplas in i en senare session.
-            </StubNotice>
+            <MagicLinkForm />
           </div>
         </section>
 

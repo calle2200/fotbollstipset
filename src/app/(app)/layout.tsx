@@ -3,16 +3,19 @@ import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { Countdown } from "@/components/ui/Countdown";
 import { PredictionsProvider } from "@/lib/predictions/store";
 import { activeTournament } from "@/lib/mock/data";
+import { getCurrentUser } from "@/lib/supabase/server";
 
-export default function AppLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getCurrentUser();
+
   return (
     <PredictionsProvider>
       <div className="flex min-h-full flex-col">
-        <Header />
+        <Header userEmail={user?.email ?? null} />
         {/* Countdown-rad till turneringsstart */}
         <div className="border-b border-border/60 bg-surface/40 backdrop-blur-sm">
           <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 px-4 py-2 sm:justify-start sm:px-6">

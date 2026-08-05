@@ -5,17 +5,37 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Logo } from "./Logo";
 import { NavIcon } from "./NavIcon";
-import { primaryNav, secondaryNav, allNav } from "@/lib/nav";
-import { currentUser, activeTournament } from "@/lib/mock/data";
+import { primaryNav, allNav } from "@/lib/nav";
+import { activeTournament } from "@/lib/mock/data";
 import { cn } from "@/lib/cn";
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-export function Header() {
+/** Utloggningsknapp — postar till route handlern som rensar sessionen. */
+function SignOutButton({ className }: { className?: string }) {
+  return (
+    <form action="/auth/sign-out" method="post" className={className}>
+      <button
+        type="submit"
+        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-muted transition-colors hover:bg-surface-2 hover:text-pink"
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+        </svg>
+        Logga ut
+      </button>
+    </form>
+  );
+}
+
+export function Header({ userEmail }: { userEmail?: string | null }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const initial = userEmail ? userEmail[0]!.toUpperCase() : null;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md">
@@ -67,19 +87,60 @@ export function Header() {
             Admin
           </Link>
 
-          {/* Profil-avatar */}
-          <Link
-            href="/profil"
-            className={cn(
-              "flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-colors",
-              isActive(pathname, "/profil")
-                ? "border-brand/60 bg-brand/10"
-                : "border-border bg-surface-2 hover:border-brand/40",
-            )}
-            aria-label="Profil"
-          >
-            {currentUser.avatar}
-          </Link>
+          {/* Användarmeny (inloggad) eller inloggningslänk */}
+          {userEmail ? (
+            <div className="relative">
+              <button
+                onClick={() => setUserMenuOpen((v) => !v)}
+                className={cn(
+                  "flex h-10 w-10 items-center justify-center rounded-full border text-sm font-bold transition-colors",
+                  userMenuOpen || isActive(pathname, "/profil")
+                    ? "border-brand/60 bg-brand/10 text-brand"
+                    : "border-border bg-surface-2 text-ink hover:border-brand/40",
+                )}
+                aria-label="Kontomeny"
+                aria-expanded={userMenuOpen}
+              >
+                {initial}
+              </button>
+
+              {userMenuOpen && (
+                <>
+                  {/* Klick utanför stänger menyn */}
+                  <button
+                    className="fixed inset-0 z-40 cursor-default"
+                    onClick={() => setUserMenuOpen(false)}
+                    aria-label="Stäng meny"
+                    tabIndex={-1}
+                  />
+                  <div className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border border-border bg-surface p-1.5 shadow-xl">
+                    <div className="border-b border-border px-3 py-2.5">
+                      <p className="text-xs text-faint">Inloggad som</p>
+                      <p className="truncate text-sm font-medium text-ink">{userEmail}</p>
+                    </div>
+                    <Link
+                      href="/profil"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="mt-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM3 21a9 9 0 0 1 18 0" />
+                      </svg>
+                      Profil
+                    </Link>
+                    <SignOutButton />
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <Link
+              href="/"
+              className="rounded-full border border-border px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:border-brand/50 hover:text-brand"
+            >
+              Logga in
+            </Link>
+          )}
 
           {/* Mobil menyknapp */}
           <button
@@ -129,6 +190,25 @@ export function Header() {
               );
             })}
           </nav>
+
+          {/* Konto längst ner i mobilmenyn */}
+          <div className="mx-auto max-w-6xl border-t border-border px-4 py-3">
+            {userEmail ? (
+              <>
+                <p className="px-3 pb-1 text-xs text-faint">Inloggad som</p>
+                <p className="truncate px-3 pb-2 text-sm font-medium text-ink">{userEmail}</p>
+                <SignOutButton />
+              </>
+            ) : (
+              <Link
+                href="/"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-brand"
+              >
+                Logga in
+              </Link>
+            )}
+          </div>
         </div>
       )}
     </header>
