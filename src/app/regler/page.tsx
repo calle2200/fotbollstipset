@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
@@ -32,7 +33,7 @@ export default function ReglerPage() {
       <header className="border-b border-border bg-bg/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4 sm:px-6">
           <Logo href="/" />
-          <ButtonLink href="/turneringar" variant="outline" size="sm">
+          <ButtonLink href="/#logga-in" variant="outline" size="sm">
             Logga in
           </ButtonLink>
         </div>
@@ -404,11 +405,17 @@ export default function ReglerPage() {
         </SectionCard>
 
         {/* CTA */}
-        <div className="flex flex-col items-center gap-4 pt-2 text-center">
+        <div className="flex flex-col items-center gap-3 pt-2 text-center">
           <p className="text-muted">Redo att lägga ditt tips?</p>
-          <ButtonLink href="/turneringar" size="lg" className="neon-glow">
+          <ButtonLink href="/#logga-in" size="lg" className="neon-glow">
             Kom igång
           </ButtonLink>
+          <Link
+            href="/turneringar"
+            className="text-sm text-faint underline-offset-4 transition-colors hover:text-muted hover:underline"
+          >
+            eller titta runt som gäst
+          </Link>
         </div>
       </main>
 

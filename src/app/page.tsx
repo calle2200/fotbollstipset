@@ -50,7 +50,7 @@ export default function LandingPage() {
           >
             Regler
           </Link>
-          <ButtonLink href="/turneringar" variant="outline" size="sm">
+          <ButtonLink href="/#logga-in" variant="outline" size="sm">
             Logga in
           </ButtonLink>
         </div>
@@ -89,8 +89,28 @@ export default function LandingPage() {
           </div>
 
           {/* Inloggning via magic link */}
-          <div className="mt-9 w-full max-w-sm">
+          <div id="logga-in" className="mt-9 w-full max-w-sm scroll-mt-24">
             <MagicLinkForm />
+
+            {/* Gästläge — så man kan titta runt utan konto */}
+            <div className="mt-5 flex items-center gap-3">
+              <span className="h-px flex-1 bg-border" />
+              <span className="text-xs font-medium uppercase tracking-wide text-faint">
+                eller
+              </span>
+              <span className="h-px flex-1 bg-border" />
+            </div>
+
+            <Link
+              href="/turneringar"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-brand/50 hover:text-brand"
+            >
+              👀 Titta runt som gäst
+            </Link>
+            <p className="mt-2 text-xs text-faint">
+              Utforska hela appen utan konto — dina tips sparas bara i den här
+              webbläsaren.
+            </p>
           </div>
         </section>
 

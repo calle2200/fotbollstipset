@@ -135,7 +135,7 @@ export function Header({ userEmail }: { userEmail?: string | null }) {
             </div>
           ) : (
             <Link
-              href="/"
+              href="/#logga-in"
               className="rounded-full border border-border px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:border-brand/50 hover:text-brand"
             >
               Logga in
@@ -201,7 +201,7 @@ export function Header({ userEmail }: { userEmail?: string | null }) {
               </>
             ) : (
               <Link
-                href="/"
+                href="/#logga-in"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-brand"
               >

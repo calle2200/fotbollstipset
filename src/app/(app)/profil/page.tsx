@@ -33,7 +33,7 @@ export default async function ProfilPage() {
               </Button>
             </form>
           ) : (
-            <ButtonLink href="/" variant="outline">
+            <ButtonLink href="/#logga-in" variant="outline">
               Logga in
             </ButtonLink>
           )
@@ -82,8 +82,9 @@ export default async function ProfilPage() {
       </Card>
 
       <StubNotice>
-        Användarnamn, avatar och utloggning kräver auth — kopplas in i nästa
-        session. Statistiken ovan är mockad.
+        Inloggning och utloggning fungerar. Användarnamn, avatar och statistiken
+        ovan är fortfarande exempeldata — de kopplas till ditt konto när tipsen
+        flyttas till databasen.
       </StubNotice>
 
       {/* Mina specialval */}
