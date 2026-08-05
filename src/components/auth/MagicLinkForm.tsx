@@ -29,11 +29,17 @@ export function MagicLinkForm() {
 
       if (error) {
         setStatus("error");
-        setMessage(
-          error.message.toLowerCase().includes("rate")
-            ? "För många försök. Vänta en stund och prova igen."
-            : "Något gick fel. Kontrollera adressen och försök igen.",
-        );
+        const raw = error.message ?? "";
+        const lower = raw.toLowerCase();
+
+        if (lower.includes("rate") || lower.includes("security purposes") || lower.includes("seconds")) {
+          // Supabase begränsar hur ofta mejl får skickas.
+          setMessage(`För många försök — vänta en stund och prova igen. (${raw})`);
+        } else if (lower.includes("redirect")) {
+          setMessage(`Adressen är inte godkänd i Supabase. (${raw})`);
+        } else {
+          setMessage(`Något gick fel: ${raw}`);
+        }
         return;
       }
 
