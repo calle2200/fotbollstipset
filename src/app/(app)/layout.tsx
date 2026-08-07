@@ -4,7 +4,8 @@ import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { Countdown } from "@/components/ui/Countdown";
 import { PredictionsProvider } from "@/lib/predictions/store";
 import { activeTournament } from "@/lib/mock/data";
-import { getCurrentUser } from "@/lib/supabase/server";
+import { getCurrentUser, getProfile } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function AppLayout({
   children,
@@ -12,11 +13,16 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const user = await getCurrentUser();
+  const profile = user ? await getProfile(user.id) : null;
+
+  // Inloggad men utan användarnamn? Slutför onboardingen först.
+  // (Gäster påverkas inte — de får fortsätta titta runt.)
+  if (profile && !profile.username) redirect("/valj-anvandarnamn");
 
   return (
     <PredictionsProvider userId={user?.id ?? null}>
       <div className="flex min-h-full flex-col">
-        <Header userEmail={user?.email ?? null} />
+        <Header userEmail={user?.email ?? null} userName={profile?.username ?? null} />
         {/* Countdown till turneringsstart + ev. gäst-markering */}
         <div className="border-b border-border/60 bg-surface/40 backdrop-blur-sm">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-2 sm:justify-between sm:px-6">

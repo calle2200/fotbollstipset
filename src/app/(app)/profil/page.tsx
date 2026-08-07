@@ -4,7 +4,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { StubNotice } from "@/components/ui/StubNotice";
 import { specialPicks, leagues, currentUser } from "@/lib/mock/data";
-import { getCurrentUser } from "@/lib/supabase/server";
+import { getCurrentUser, getProfile } from "@/lib/supabase/server";
+import { ChangeUsername } from "@/components/profile/ChangeUsername";
+import { DeleteAccount } from "@/components/profile/DeleteAccount";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +22,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: str
 export default async function ProfilPage() {
   const hitRate = Math.round((currentUser.correctPicks / currentUser.totalPicks) * 100);
   const user = await getCurrentUser();
+  const profile = user ? await getProfile(user.id) : null;
 
   return (
     <div className="space-y-8">
@@ -64,8 +67,12 @@ export default async function ProfilPage() {
             {currentUser.avatar}
           </span>
           <div className="text-center sm:text-left">
-            <h2 className="text-xl font-bold text-ink">{currentUser.displayName}</h2>
-            <p className="font-mono text-sm text-muted">@{currentUser.username}</p>
+            <h2 className="text-xl font-bold text-ink">
+              {profile?.display_name ?? currentUser.displayName}
+            </h2>
+            <p className="font-mono text-sm text-muted">
+              @{profile?.username ?? currentUser.username}
+            </p>
             <div className="mt-2 flex flex-wrap justify-center gap-2 sm:justify-start">
               <Badge tone="brand">#{currentUser.globalRank} globalt</Badge>
               <Badge tone="muted">{currentUser.leaguesCount} ligor</Badge>
@@ -86,6 +93,24 @@ export default async function ProfilPage() {
         ovan är fortfarande exempeldata — de kopplas till ditt konto när tipsen
         flyttas till databasen.
       </StubNotice>
+
+      {/* Kontoinställningar — bara för inloggade */}
+      {user && profile?.username && (
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold text-ink">Konto</h2>
+          <Card>
+            <div className="border-b border-border px-5 py-4">
+              <ChangeUsername
+                current={profile.username}
+                changedAt={profile.username_changed_at ?? null}
+              />
+            </div>
+            <div className="px-5 py-4">
+              <DeleteAccount username={profile.username} />
+            </div>
+          </Card>
+        </section>
+      )}
 
       {/* Mina specialval */}
       <section className="space-y-3">

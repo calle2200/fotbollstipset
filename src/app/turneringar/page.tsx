@@ -5,7 +5,8 @@ import { Countdown } from "@/components/ui/Countdown";
 import { BallIcon, TrophyIcon } from "@/components/ui/Football";
 import { tournaments, currentUser } from "@/lib/mock/data";
 import { getTournaments } from "@/lib/supabase/tournaments";
-import { getCurrentUser } from "@/lib/supabase/server";
+import { getCurrentUser, getProfile } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 // Läs alltid färsk data från databasen vid varje besök.
 export const dynamic = "force-dynamic";
@@ -22,8 +23,12 @@ export default async function TurneringarPage() {
   // Hämta från Supabase; faller tillbaka på mockdata om databasen inte svarar.
   const list = (await getTournaments()) ?? tournaments;
   const user = await getCurrentUser();
-  // Visa den del av mejlen som står före @ som visningsnamn tills profiler finns.
-  const greetingName = user?.email?.split("@")[0] ?? currentUser.displayName;
+  const profile = user ? await getProfile(user.id) : null;
+
+  // Inloggad utan användarnamn? Slutför onboardingen först.
+  if (profile && !profile.username) redirect("/valj-anvandarnamn");
+
+  const greetingName = profile?.username ?? currentUser.displayName;
 
   return (
     <div className="flex min-h-full flex-col">
@@ -36,7 +41,11 @@ export default async function TurneringarPage() {
             className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-2 text-sm font-bold text-ink transition-colors hover:border-brand/40"
             aria-label="Profil"
           >
-            {user?.email ? user.email[0]!.toUpperCase() : currentUser.avatar}
+            {profile?.username
+              ? profile.username[0]!.toUpperCase()
+              : user?.email
+                ? user.email[0]!.toUpperCase()
+                : currentUser.avatar}
           </Link>
         </div>
       </header>

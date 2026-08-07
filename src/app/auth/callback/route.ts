@@ -12,8 +12,20 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createSupabaseServerClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Nya användare saknar användarnamn — skicka dem till onboarding först.
+      const userId = data.user?.id;
+      if (userId) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", userId)
+          .maybeSingle();
+        if (!profile?.username) {
+          return NextResponse.redirect(`${origin}/valj-anvandarnamn`);
+        }
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

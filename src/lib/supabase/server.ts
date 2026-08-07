@@ -30,6 +30,24 @@ export async function createSupabaseServerClient() {
   });
 }
 
+/**
+ * Hämtar användarens profil (användarnamn m.m.), eller null.
+ * Kastar aldrig — anroparen kan behandla null som "vet inte".
+ */
+export async function getProfile(userId: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data } = await supabase
+      .from("profiles")
+      .select("id, username, display_name, avatar, username_changed_at")
+      .eq("id", userId)
+      .maybeSingle();
+    return data ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /** Hämtar inloggad användare, eller null. Kastar aldrig. */
 export async function getCurrentUser() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
