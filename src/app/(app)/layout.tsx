@@ -14,7 +14,7 @@ export default async function AppLayout({
   const user = await getCurrentUser();
 
   return (
-    <PredictionsProvider>
+    <PredictionsProvider userId={user?.id ?? null}>
       <div className="flex min-h-full flex-col">
         <Header userEmail={user?.email ?? null} />
         {/* Countdown till turneringsstart + ev. gäst-markering */}

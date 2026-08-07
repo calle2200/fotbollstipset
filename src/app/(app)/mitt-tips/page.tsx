@@ -23,9 +23,10 @@ export default async function MittTipsPage({
       />
 
       <StubNotice>
-        Dina tips sparas lokalt i webbläsaren så du kan klicka runt och komma
-        tillbaka. Riktig lagring per konto, låsning vid deadline och
-        poängberäkning kopplas på med Supabase i nästa session.
+        Alla dina tips — matcher, gruppplaceringar och specialval — sparas på
+        ditt konto när du är inloggad, och följer med mellan enheter. Som gäst
+        sparas de bara i den här webbläsaren. Låsning vid deadline och
+        poängberäkning byggs i ett senare steg.
       </StubNotice>
 
       <TipsTabs initialTab={initialTab} />

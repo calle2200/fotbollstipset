@@ -22,14 +22,15 @@ function Stepper({
   label,
 }: {
   value: number;
-  onChange: (v: number) => void;
+  /** Anropas med en förändring (+1 / -1), inte ett absolut värde. */
+  onChange: (delta: number) => void;
   label: string;
 }) {
   return (
     <div className="flex items-center overflow-hidden rounded-lg border border-border bg-surface-2">
       <button
         type="button"
-        onClick={() => onChange(value - 1)}
+        onClick={() => onChange(-1)}
         className="flex h-9 w-8 items-center justify-center text-muted transition-colors hover:bg-border hover:text-ink"
         aria-label={`Minska ${label}`}
       >
@@ -40,7 +41,7 @@ function Stepper({
       </span>
       <button
         type="button"
-        onClick={() => onChange(value + 1)}
+        onClick={() => onChange(1)}
         className="flex h-9 w-8 items-center justify-center text-muted transition-colors hover:bg-border hover:text-ink"
         aria-label={`Öka ${label}`}
       >
@@ -52,7 +53,7 @@ function Stepper({
 
 /** Redigerbart matchtips — 1X2 härleds av valt resultat. */
 export function MatchPicker({ match }: { match: Match }) {
-  const { scores, setScore } = usePredictions();
+  const { scores, bumpScore } = usePredictions();
   const score = scores[match.id] ?? { home: 0, away: 0 };
 
   const sign = Math.sign(score.home - score.away);
@@ -93,13 +94,13 @@ export function MatchPicker({ match }: { match: Match }) {
         <div className="flex shrink-0 items-center gap-2">
           <Stepper
             value={score.home}
-            onChange={(v) => setScore(match.id, "home", v)}
+            onChange={(d) => bumpScore(match.id, "home", d)}
             label={`mål ${match.home.name}`}
           />
           <span className="font-bold text-faint">–</span>
           <Stepper
             value={score.away}
-            onChange={(v) => setScore(match.id, "away", v)}
+            onChange={(d) => bumpScore(match.id, "away", d)}
             label={`mål ${match.away.name}`}
           />
         </div>
