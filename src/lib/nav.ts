@@ -43,6 +43,12 @@ export const primaryNav: NavItem[] = [
 // Sekundära vyer — nås via header/meny, inte i bottom-baren.
 export const secondaryNav: NavItem[] = [
   {
+    href: "/regler",
+    label: "Regler & poäng",
+    short: "Regler",
+    icon: "M12 17h.01M12 13.5a1.5 1.5 0 0 1 1-1.41 2.6 2.6 0 1 0-3.4-2.59M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",
+  },
+  {
     href: "/profil",
     label: "Profil",
     short: "Profil",

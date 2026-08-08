@@ -84,6 +84,21 @@ export function Header({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Regler — nåbar för alla, även gäster (desktop) */}
+          <Link
+            href="/regler"
+            title="Regler & poäng"
+            className={cn(
+              "hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors lg:inline-flex",
+              isActive(pathname, "/regler") ? "text-brand" : "text-muted hover:text-ink",
+            )}
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 17h.01M12 13.5a1.5 1.5 0 0 1 1-1.41 2.6 2.6 0 1 0-3.4-2.59M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" />
+            </svg>
+            Regler
+          </Link>
+
           {/* Admin-genväg (desktop) */}
           <Link
             href="/admin"

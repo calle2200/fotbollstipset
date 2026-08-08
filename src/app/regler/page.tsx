@@ -3,6 +3,9 @@ import { Logo } from "@/components/layout/Logo";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { BallIcon, TrophyIcon, WhistleIcon } from "@/components/ui/Football";
+import { getCurrentUser } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Så funkar poängen — Pick'em",
@@ -26,16 +29,25 @@ function SectionCard({
   );
 }
 
-export default function ReglerPage() {
+export default async function ReglerPage() {
+  // Sidan är publik, men inloggade ska inte mötas av en "Logga in"-knapp.
+  const user = await getCurrentUser();
+
   return (
     <div className="flex min-h-full flex-col">
-      {/* Publik toppbar */}
+      {/* Toppbar — anpassad efter om man är inloggad eller inte */}
       <header className="border-b border-border bg-bg/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4 sm:px-6">
-          <Logo href="/" />
-          <ButtonLink href="/#logga-in" variant="outline" size="sm">
-            Logga in
-          </ButtonLink>
+          <Logo href={user ? "/mitt-tips" : "/"} />
+          {user ? (
+            <ButtonLink href="/mitt-tips" variant="outline" size="sm">
+              ← Tillbaka till appen
+            </ButtonLink>
+          ) : (
+            <ButtonLink href="/#logga-in" variant="outline" size="sm">
+              Logga in
+            </ButtonLink>
+          )}
         </div>
       </header>
 
@@ -407,20 +419,28 @@ export default function ReglerPage() {
         {/* CTA */}
         <div className="flex flex-col items-center gap-3 pt-2 text-center">
           <p className="text-muted">Redo att lägga ditt tips?</p>
-          <ButtonLink href="/#logga-in" size="lg" className="neon-glow">
-            Kom igång
-          </ButtonLink>
-          <Link
-            href="/turneringar"
-            className="text-sm text-faint underline-offset-4 transition-colors hover:text-muted hover:underline"
-          >
-            eller titta runt som gäst
-          </Link>
+          {user ? (
+            <ButtonLink href="/mitt-tips" size="lg" className="neon-glow">
+              Till mitt tips
+            </ButtonLink>
+          ) : (
+            <>
+              <ButtonLink href="/#logga-in" size="lg" className="neon-glow">
+                Kom igång
+              </ButtonLink>
+              <Link
+                href="/turneringar"
+                className="text-sm text-faint underline-offset-4 transition-colors hover:text-muted hover:underline"
+              >
+                eller titta runt som gäst
+              </Link>
+            </>
+          )}
         </div>
       </main>
 
       <footer className="field-stripes border-t border-border py-6 text-center text-sm text-faint">
-        Pick'em · EM 2028
+        Pick&apos;em · EM 2028
       </footer>
     </div>
   );

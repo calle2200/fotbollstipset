@@ -16,6 +16,34 @@ export type LeagueMember = {
   isOwner: boolean;
 };
 
+export type LeaderboardRow = {
+  userId: string;
+  username: string;
+  tipsCount: number;
+};
+
+/**
+ * Global topplista — alla registrerade spelare.
+ * Poäng saknas tills poängmotorn är byggd; tills dess visas antal lagda tips.
+ */
+export async function getLeaderboard(): Promise<LeaderboardRow[]> {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.rpc("leaderboard");
+    if (error || !data) return [];
+
+    return (data as { user_id: string; username: string; tips_count: number }[]).map(
+      (r) => ({
+        userId: r.user_id,
+        username: r.username,
+        tipsCount: Number(r.tips_count) || 0,
+      }),
+    );
+  } catch {
+    return [];
+  }
+}
+
 /** Ligorna den inloggade användaren är med i. Tom lista om utloggad. */
 export async function getMyLeagues(userId: string | null): Promise<League[]> {
   if (!userId) return [];
