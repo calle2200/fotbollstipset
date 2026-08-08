@@ -1,12 +1,19 @@
+import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Card, CardHeader } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { StubNotice } from "@/components/ui/StubNotice";
-import { LeaderboardTable } from "@/components/leaderboard/LeaderboardTable";
-import { leagues, leagueLeaderboard } from "@/lib/mock/data";
+import { CreateLeagueForm, JoinLeagueForm } from "@/components/leagues/LeagueForms";
+import { InviteCode } from "@/components/leagues/InviteCode";
+import { getCurrentUser } from "@/lib/supabase/server";
+import { getMyLeagues } from "@/lib/supabase/leagues";
 
-export default function LigorPage() {
+export const dynamic = "force-dynamic";
+
+export default async function LigorPage() {
+  const user = await getCurrentUser();
+  const leagues = await getMyLeagues(user?.id ?? null);
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -14,74 +21,75 @@ export default function LigorPage() {
         subtitle="Skapa en liga, bjud in vänner med en kod och tävla på en egen topplista."
       />
 
+      {!user && (
+        <div className="rounded-xl border border-border bg-surface-2/50 px-4 py-3 text-sm text-muted">
+          Du behöver ett konto för att skapa eller gå med i en liga.{" "}
+          <Link href="/#logga-in" className="font-medium text-brand hover:underline">
+            Logga in
+          </Link>{" "}
+          — det tar tio sekunder.
+        </div>
+      )}
+
       {/* Skapa / gå med */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="p-5">
-          <h3 className="font-semibold text-ink">Skapa liga</h3>
-          <p className="mt-1 text-sm text-muted">
-            Du blir ägare och får en inbjudningskod att dela.
-          </p>
-          <div className="mt-4 flex gap-2">
-            <input
-              disabled
-              placeholder="Liganamn"
-              className="h-10 flex-1 rounded-xl border border-border bg-surface-2 px-3.5 text-ink placeholder:text-faint focus:outline-none"
-            />
-            <Button disabled>Skapa</Button>
-          </div>
+          <CreateLeagueForm disabled={!user} />
         </Card>
-
         <Card className="p-5">
-          <h3 className="font-semibold text-ink">Gå med i liga</h3>
-          <p className="mt-1 text-sm text-muted">Ange en inbjudningskod från en vän.</p>
-          <div className="mt-4 flex gap-2">
-            <input
-              disabled
-              placeholder="PICK-XXXX"
-              className="h-10 flex-1 rounded-xl border border-border bg-surface-2 px-3.5 font-mono uppercase text-ink placeholder:text-faint focus:outline-none"
-            />
-            <Button disabled variant="secondary">
-              Gå med
-            </Button>
-          </div>
+          <JoinLeagueForm disabled={!user} />
         </Card>
       </div>
 
       <StubNotice>
-        Skapa/gå med, inbjudningskoder och medlemskap kräver databas och auth —
-        byggs i nästa session.
+        Ligorna fungerar på riktigt — men topplistan kan inte ranka på poäng
+        förrän poängmotorn är byggd. Tills dess visas medlemmarna utan placering.
       </StubNotice>
 
       {/* Mina ligor */}
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-ink">Mina ligor</h2>
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {leagues.map((l) => (
-            <Card key={l.id} className="p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-semibold text-ink">{l.name}</h3>
-                  <p className="text-sm text-muted">{l.members.toLocaleString("sv-SE")} medlemmar</p>
-                </div>
-                {l.isPublic ? <Badge tone="mint">Publik</Badge> : <Badge tone="muted">Privat</Badge>}
-              </div>
-              <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                <span className="text-sm text-muted">Din placering</span>
-                <span className="text-lg font-bold text-brand">#{l.myRank}</span>
-              </div>
-              <p className="mt-2 font-mono text-xs text-faint">Kod: {l.inviteCode}</p>
-            </Card>
-          ))}
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-ink">Mina ligor</h2>
+          {leagues.length > 0 && <Badge tone="muted">{leagues.length}</Badge>}
         </div>
-      </section>
 
-      {/* Liga-leaderboard */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-ink">Liga-leaderboard</h2>
-        <Card>
-          <CardHeader title="Kontoret 2026" subtitle="Rankad på total turneringspoäng" />
-          <LeaderboardTable rows={leagueLeaderboard} />
-        </Card>
+        {leagues.length === 0 ? (
+          <div className="rounded-[var(--radius-card)] border border-dashed border-border bg-surface/40 px-5 py-10 text-center">
+            <p className="text-4xl">🏆</p>
+            <p className="mt-3 font-medium text-ink">Du är inte med i någon liga än</p>
+            <p className="mt-1 text-sm text-muted">
+              {user
+                ? "Skapa en egen och bjud in vännerna, eller gå med via en kod."
+                : "Logga in för att skapa eller gå med i en liga."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {leagues.map((l) => (
+              <Card key={l.id} className="flex flex-col p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <Link
+                      href={`/ligor/${l.id}`}
+                      className="truncate font-semibold text-ink transition-colors hover:text-brand"
+                    >
+                      {l.name}
+                    </Link>
+                    <p className="text-sm text-muted">
+                      {l.memberCount} {l.memberCount === 1 ? "medlem" : "medlemmar"}
+                    </p>
+                  </div>
+                  {l.ownerId === user?.id && <Badge tone="brand">Ägare</Badge>}
+                </div>
+
+                <div className="mt-4 border-t border-border pt-3">
+                  <p className="mb-1.5 text-xs text-faint">Inbjudningskod</p>
+                  <InviteCode code={l.inviteCode} />
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
