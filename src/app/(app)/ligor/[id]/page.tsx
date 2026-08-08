@@ -8,7 +8,7 @@ import { InviteCode } from "@/components/leagues/InviteCode";
 import { LeaveLeague } from "@/components/leagues/LeaveLeague";
 import { OwnerActions } from "@/components/leagues/OwnerActions";
 import { getCurrentUser } from "@/lib/supabase/server";
-import { getLeagueWithMembers } from "@/lib/supabase/leagues";
+import { getLeagueWithMembers, getLeagueStandings } from "@/lib/supabase/leagues";
 import { cn } from "@/lib/cn";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +31,19 @@ export default async function LigaPage({
 
   const { league, members } = result;
   const isOwner = league.ownerId === user?.id;
+
+  // Ställningen är rankad på poäng; fall tillbaka på medlemsordningen om den
+  // inte går att hämta (t.ex. som gäst).
+  const standings = await getLeagueStandings(league.id);
+  const pointsByUser = new Map(standings.map((s) => [s.userId, s.points]));
+  const ranked =
+    standings.length > 0
+      ? standings.map((s) => ({
+          ...members.find((m) => m.userId === s.userId)!,
+          points: s.points,
+        }))
+      : members.map((m) => ({ ...m, points: pointsByUser.get(m.userId) ?? 0 }));
+  const anyPoints = ranked.some((r) => r.points > 0);
 
   return (
     <div className="space-y-6">
@@ -62,14 +75,18 @@ export default async function LigaPage({
         </div>
       </Card>
 
-      <StubNotice>
-        Poängkolumnen fylls när poängmotorn är byggd. Just nu visas medlemmarna i
-        den ordning de gick med.
-      </StubNotice>
+      {!anyPoints && (
+        <StubNotice>
+          Inga matcher är avgjorda än, så alla står på 0 p. Ställningen uppdateras
+          allt eftersom resultaten kommer in.
+        </StubNotice>
+      )}
 
-      {/* Medlemmar / kommande topplista */}
+      {/* Ställning */}
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-ink">Medlemmar</h2>
+        <h2 className="text-lg font-semibold text-ink">
+          {anyPoints ? "Ställning" : "Medlemmar"}
+        </h2>
         <Card>
           <div className="grid grid-cols-[auto_1fr_auto] gap-3 border-b border-border px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-faint">
             <span>#</span>
@@ -77,7 +94,7 @@ export default async function LigaPage({
             <span className="text-right">Poäng</span>
           </div>
           <ul className="divide-y divide-border">
-            {members.map((m, i) => {
+            {ranked.map((m, i) => {
               const isMe = m.userId === user?.id;
               return (
                 <li
@@ -87,7 +104,14 @@ export default async function LigaPage({
                     isMe && "bg-brand/[0.06]",
                   )}
                 >
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-2 text-sm font-bold text-muted">
+                  <span
+                    className={cn(
+                      "flex h-7 w-7 items-center justify-center rounded-lg text-sm font-bold",
+                      anyPoints && i === 0
+                        ? "bg-gold/20 text-gold"
+                        : "bg-surface-2 text-muted",
+                    )}
+                  >
                     {i + 1}
                   </span>
                   <span className="flex min-w-0 items-center gap-2">
@@ -109,7 +133,14 @@ export default async function LigaPage({
                       med sedan {joinedLabel(m.joinedAt)}
                     </span>
                   </span>
-                  <span className="text-right font-bold tabular-nums text-faint">—</span>
+                  <span
+                    className={cn(
+                      "text-right font-bold tabular-nums",
+                      m.points > 0 ? "text-ink" : "text-faint",
+                    )}
+                  >
+                    {m.points > 0 ? m.points.toLocaleString("sv-SE") : "—"}
+                  </span>
                 </li>
               );
             })}

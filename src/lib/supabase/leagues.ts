@@ -20,25 +20,45 @@ export type LeaderboardRow = {
   userId: string;
   username: string;
   tipsCount: number;
+  points: number;
 };
 
-/**
- * Global topplista — alla registrerade spelare.
- * Poäng saknas tills poängmotorn är byggd; tills dess visas antal lagda tips.
- */
+/** Global topplista — alla registrerade spelare, rankade på poäng. */
 export async function getLeaderboard(): Promise<LeaderboardRow[]> {
   try {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.rpc("leaderboard");
     if (error || !data) return [];
 
-    return (data as { user_id: string; username: string; tips_count: number }[]).map(
-      (r) => ({
-        userId: r.user_id,
-        username: r.username,
-        tipsCount: Number(r.tips_count) || 0,
-      }),
-    );
+    return (
+      data as { user_id: string; username: string; tips_count: number; points: number }[]
+    ).map((r) => ({
+      userId: r.user_id,
+      username: r.username,
+      tipsCount: Number(r.tips_count) || 0,
+      points: Number(r.points) || 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export type StandingRow = { userId: string; username: string; points: number };
+
+/** Ställningen inom en liga. Tom lista om man inte är medlem. */
+export async function getLeagueStandings(leagueId: string): Promise<StandingRow[]> {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.rpc("league_standings", {
+      p_league_id: leagueId,
+    });
+    if (error || !data) return [];
+
+    return (data as { user_id: string; username: string; points: number }[]).map((r) => ({
+      userId: r.user_id,
+      username: r.username,
+      points: Number(r.points) || 0,
+    }));
   } catch {
     return [];
   }

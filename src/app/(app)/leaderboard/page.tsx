@@ -31,10 +31,12 @@ export default async function LeaderboardPage() {
         }
       />
 
-      <StubNotice>
-        Poängkolumnen fylls när poängmotorn är byggd — då rankas listan på total
-        poäng. Tills dess visas hur många matchtips varje spelare lagt.
-      </StubNotice>
+      {rows.every((r) => r.points === 0) && rows.length > 0 && (
+        <StubNotice>
+          Inga matcher är avgjorda än, så alla står på 0 p. Poängen tickar in när
+          resultaten matas in.
+        </StubNotice>
+      )}
 
       {rows.length === 0 ? (
         <div className="rounded-[var(--radius-card)] border border-dashed border-border bg-surface/40 px-5 py-10 text-center">
@@ -64,7 +66,18 @@ export default async function LeaderboardPage() {
                     isMe && "bg-brand/[0.06]",
                   )}
                 >
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-2 text-sm font-bold text-muted">
+                  <span
+                    className={cn(
+                      "flex h-7 w-7 items-center justify-center rounded-lg text-sm font-bold",
+                      row.points > 0 && i === 0
+                        ? "bg-gold/20 text-gold"
+                        : row.points > 0 && i === 1
+                          ? "bg-cyan/15 text-cyan"
+                          : row.points > 0 && i === 2
+                            ? "bg-violet/15 text-violet"
+                            : "bg-surface-2 text-muted",
+                    )}
+                  >
                     {i + 1}
                   </span>
                   <span className="flex min-w-0 items-center gap-2">
@@ -91,7 +104,14 @@ export default async function LeaderboardPage() {
                   >
                     {row.tipsCount}/{totalMatches}
                   </span>
-                  <span className="text-right font-bold tabular-nums text-faint">—</span>
+                  <span
+                    className={cn(
+                      "text-right font-bold tabular-nums",
+                      row.points > 0 ? "text-ink" : "text-faint",
+                    )}
+                  >
+                    {row.points > 0 ? row.points.toLocaleString("sv-SE") : "—"}
+                  </span>
                 </li>
               );
             })}

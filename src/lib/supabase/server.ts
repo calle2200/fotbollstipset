@@ -39,12 +39,24 @@ export async function getProfile(userId: string) {
     const supabase = await createSupabaseServerClient();
     const { data } = await supabase
       .from("profiles")
-      .select("id, username, display_name, avatar, username_changed_at")
+      .select("id, username, display_name, avatar, username_changed_at, is_admin")
       .eq("id", userId)
       .maybeSingle();
     return data ?? null;
   } catch {
     return null;
+  }
+}
+
+/** Är den inloggade användaren admin? Falskt för utloggade. Kastar aldrig. */
+export async function isCurrentUserAdmin(): Promise<boolean> {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return false;
+    const profile = await getProfile(user.id);
+    return Boolean(profile?.is_admin);
+  } catch {
+    return false;
   }
 }
 
